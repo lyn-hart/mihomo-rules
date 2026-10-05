@@ -8,7 +8,7 @@ import yaml
 ROOT = Path(__file__).resolve().parents[1]
 CONFIG = ROOT / "yaml" / "ACL4SSR_Online_Full.yaml"
 REGIONS = (
-    "🇭🇰 香港节点", "🇨🇳 台湾节点", "🇯🇵 日本节点",
+    "🇭🇰 香港节点", "🇹🇼 台湾节点", "🇯🇵 日本节点",
     "🇸🇬 狮城节点", "🇺🇲 美国节点", "🇰🇷 韩国节点",
 )
 HONG_KONG = (
@@ -27,7 +27,7 @@ REGION_IDENTIFIERS = {
     "🇭🇰 香港节点": ("HK01", "hk-02", "HKG03", "🇭🇰 01", "Hong_Kong 01"),
     "🇯🇵 日本节点": ("JP01", "JPN-02", "🇯🇵 01", "[anytls]JP Tokyo"),
     "🇺🇲 美国节点": ("US01", "USA-02", "🇺🇸 01", "🇺🇲 02", "[anytls]US NYC"),
-    "🇨🇳 台湾节点": ("TW01", "TWN-02", "🇹🇼 01", "[anytls]TW Hinet"),
+    "🇹🇼 台湾节点": ("TW01", "TWN-02", "🇹🇼 01", "[anytls]TW Hinet"),
     "🇸🇬 狮城节点": ("SG01", "SGP-02", "🇸🇬 01", "Singapore 01"),
     "🇰🇷 韩国节点": ("KR01", "KOR-02", "🇰🇷 01", "Seoul Korea 01"),
 }
@@ -77,7 +77,7 @@ class OverrideTests(unittest.TestCase):
         self.assertEqual(list(self.groups), [
             "🚀 节点选择", "🚀 手动切换", "♻️ 自动选择",
             "🇭🇰 香港节点", "🇯🇵 日本节点", "🇺🇲 美国节点",
-            "🇨🇳 台湾节点", "🇸🇬 狮城节点", "🇰🇷 韩国节点", "🌐 其他节点",
+            "🇹🇼 台湾节点", "🇸🇬 狮城节点", "🇰🇷 韩国节点", "🌐 其他节点",
             "📲 电报消息", "💬 OpenAi", "📹 油管视频", "🎥 奈飞视频",
             "📺 巴哈姆特", "📺 哔哩哔哩", "🌍 国外媒体", "🌏 国内媒体",
             "📢 谷歌FCM", "Ⓜ️ 微软Bing", "Ⓜ️ 微软云盘", "Ⓜ️ 微软服务",
