@@ -78,7 +78,7 @@ class OverrideTests(unittest.TestCase):
             "🚀 节点选择", "🚀 手动切换", "♻️ 自动选择",
             "🇭🇰 香港节点", "🇯🇵 日本节点", "🇺🇲 美国节点",
             "🇹🇼 台湾节点", "🇸🇬 狮城节点", "🇰🇷 韩国节点", "🌐 其他节点",
-            "📲 电报消息", "📹 油管视频", "🎥 奈飞视频",
+            "📲 电报消息", "💬 OpenAi", "📹 油管视频", "🎥 奈飞视频",
             "📺 巴哈姆特", "📺 哔哩哔哩", "🌍 国外媒体", "🌏 国内媒体",
             "📢 谷歌FCM", "Ⓜ️ 微软Bing", "Ⓜ️ 微软云盘", "Ⓜ️ 微软服务",
             "🍎 苹果服务", "🎮 游戏平台", "🎶 网易音乐", "🎯 全球直连",
@@ -134,12 +134,23 @@ class OverrideTests(unittest.TestCase):
         for region in REGIONS:
             self.assertIn(region, self.groups)
         for candidate in self.groups.values():
+            if candidate["name"] == "💬 OpenAi":
+                continue  # Keep the upstream OpenAi candidate list unchanged.
             if "🇰🇷 韩国节点" in candidate.get("proxies", []):
                 self.assertIn("🌐 其他节点", candidate["proxies"])
 
-    def test_openai_rules_use_node_selection(self):
-        self.assertIn("RULE-SET,OpenAi,🚀 节点选择", self.config["rules"])
-        self.assertIn("🚀 节点选择", self.groups)
+    def test_openai_group_matches_original(self):
+        group = self.groups["💬 OpenAi"]
+        self.assertEqual(group, {
+            "name": "💬 OpenAi",
+            "type": "select",
+            "proxies": [
+                "🚀 节点选择", "♻️ 自动选择", "🇸🇬 狮城节点", "🇭🇰 香港节点",
+                "🇹🇼 台湾节点", "🇯🇵 日本节点", "🇺🇲 美国节点", "🇰🇷 韩国节点",
+                "🚀 手动切换", "DIRECT",
+            ],
+        })
+        self.assertIn("RULE-SET,OpenAi,💬 OpenAi", self.config["rules"])
 
     def test_region_codes_and_flags(self):
         for expected, names in REGION_IDENTIFIERS.items():

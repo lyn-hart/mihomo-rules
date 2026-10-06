@@ -24,7 +24,7 @@ def nodes(names):
 
 @unittest.skipUnless(os.environ.get("MIHOMO_BIN"), "Set MIHOMO_BIN for offline core checks")
 class MihomoRuntimeTests(unittest.TestCase):
-    def test_candidates_and_ai_empty_fallback(self):
+    def test_candidates_and_empty_fallback(self):
         config = yaml.safe_load(CONFIG.read_text(encoding="utf-8"))
         groups = {g["name"]: g for g in config["proxy-groups"]}
         identifiers = tuple(n for names in REGION_IDENTIFIERS.values() for n in names)
@@ -110,7 +110,7 @@ class MihomoRuntimeTests(unittest.TestCase):
                             with client.open(f"http://127.0.0.1:{port}/proxies", timeout=1) as response:
                                 proxies = json.load(response)["proxies"]
                             # The controller can respond before the configuration is applied.
-                            if {"♻️ 自动选择", "🌐 其他节点"} <= proxies.keys():
+                            if {"♻️ 自动选择", "🌐 其他节点", "💬 OpenAi"} <= proxies.keys():
                                 return proxies
                         except OSError:
                             pass

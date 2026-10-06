@@ -1,6 +1,6 @@
 # Clash Party YAML 覆写：基于 mihomo-party-org/override-hub。
 # 自定义：地区分组前置、代码边界/旗帜识别、提示条目过滤；自动选择排除香港。
-# OpenAi 规则直接使用节点选择；不要在此文件添加订阅凭据。
+# OpenAi 分组与原版保持一致；不要在此文件添加订阅凭据。
 proxy-groups:
   - name: 🚀 节点选择
     type: select
@@ -88,6 +88,19 @@ proxy-groups:
       - 🇺🇲 美国节点
       - 🇰🇷 韩国节点
       - 🌐 其他节点
+      - 🚀 手动切换
+      - DIRECT
+  - name: 💬 OpenAi
+    type: select
+    proxies:
+      - 🚀 节点选择
+      - ♻️ 自动选择
+      - 🇸🇬 狮城节点
+      - 🇭🇰 香港节点
+      - 🇹🇼 台湾节点
+      - 🇯🇵 日本节点
+      - 🇺🇲 美国节点
+      - 🇰🇷 韩国节点
       - 🚀 手动切换
       - DIRECT
   - name: 📹 油管视频
@@ -503,7 +516,7 @@ rules:
   - "RULE-SET,Microsoft,Ⓜ️ 微软服务"
   - "RULE-SET,Apple,🍎 苹果服务"
   - "RULE-SET,Telegram,📲 电报消息"
-  - "RULE-SET,OpenAi,🚀 节点选择"
+  - "RULE-SET,OpenAi,💬 OpenAi"
   - "RULE-SET,NetEaseMusic,🎶 网易音乐"
   - "RULE-SET,Epic,🎮 游戏平台"
   - "RULE-SET,Origin,🎮 游戏平台"
