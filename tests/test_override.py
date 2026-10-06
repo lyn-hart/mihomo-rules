@@ -78,7 +78,7 @@ class OverrideTests(unittest.TestCase):
             "🚀 节点选择", "🚀 手动切换", "♻️ 自动选择",
             "🇭🇰 香港节点", "🇯🇵 日本节点", "🇺🇲 美国节点",
             "🇹🇼 台湾节点", "🇸🇬 狮城节点", "🇰🇷 韩国节点", "🌐 其他节点",
-            "📲 电报消息", "💬 OpenAi", "📹 油管视频", "🎥 奈飞视频",
+            "📲 电报消息", "📹 油管视频", "🎥 奈飞视频",
             "📺 巴哈姆特", "📺 哔哩哔哩", "🌍 国外媒体", "🌏 国内媒体",
             "📢 谷歌FCM", "Ⓜ️ 微软Bing", "Ⓜ️ 微软云盘", "Ⓜ️ 微软服务",
             "🍎 苹果服务", "🎮 游戏平台", "🎶 网易音乐", "🎯 全球直连",
@@ -137,30 +137,9 @@ class OverrideTests(unittest.TestCase):
             if "🇰🇷 韩国节点" in candidate.get("proxies", []):
                 self.assertIn("🌐 其他节点", candidate["proxies"])
 
-    def test_ai_excludes_hong_kong(self):
-        group = self.groups["💬 OpenAi"]
-        self.assertEqual(group["type"], "select")
-        self.assertTrue(group["include-all"])
-        for name in HONG_KONG:
-            with self.subTest(name=name):
-                self.assertFalse(accepts(group, name))
-        for name in REGION_SAMPLES[1:] + OTHER_SAMPLES:
-            with self.subTest(name=name):
-                self.assertTrue(accepts(group, name))
-        self.assertIn("RULE-SET,OpenAi,💬 OpenAi", self.config["rules"])
-
-    def test_ai_has_no_indirect_routes_and_rejects_empty_pool(self):
-        group = self.groups["💬 OpenAi"]
-        # Include-all adds subscription nodes/providers, not other proxy groups.
-        self.assertNotIn("proxies", group)
-        self.assertNotIn("use", group)
-        self.assertEqual(group["empty-fallback"], "REJECT")
-
-    def test_ai_excludes_direct_aliases(self):
-        group = self.groups["💬 OpenAi"]
-        self.assertFalse(accepts(group, "自定义直连", "direct"))
-        self.assertFalse(accepts(group, "日本直连别名", "Direct"))
-        self.assertTrue(accepts(group, "日本 JP 01", "ss"))
+    def test_openai_rules_use_node_selection(self):
+        self.assertIn("RULE-SET,OpenAi,🚀 节点选择", self.config["rules"])
+        self.assertIn("🚀 节点选择", self.groups)
 
     def test_region_codes_and_flags(self):
         for expected, names in REGION_IDENTIFIERS.items():
@@ -169,14 +148,14 @@ class OverrideTests(unittest.TestCase):
                     hits = [g for g in REGIONS if accepts(self.groups[g], name)]
                     self.assertEqual(hits, [expected])
                     self.assertFalse(accepts(self.groups["🌐 其他节点"], name))
-                    for group in ("♻️ 自动选择", "💬 OpenAi"):
+                    for group in ("♻️ 自动选择",):
                         self.assertEqual(accepts(self.groups[group], name), expected != "🇭🇰 香港节点")
 
     def test_codes_do_not_match_inside_words_or_identifiers(self):
         for name in MISCLASSIFIED_SAMPLES:
             with self.subTest(name=name):
                 self.assertFalse(any(accepts(self.groups[g], name) for g in REGIONS))
-                for group in ("🌐 其他节点", "♻️ 自动选择", "💬 OpenAi"):
+                for group in ("🌐 其他节点", "♻️ 自动选择"):
                     self.assertTrue(accepts(self.groups[group], name))
 
     def test_notices_excluded_from_all_dynamic_groups(self):
@@ -195,7 +174,7 @@ class OverrideTests(unittest.TestCase):
         }
         for name, region in cases.items():
             with self.subTest(name=name):
-                for group in (region, "🚀 手动切换", "♻️ 自动选择", "💬 OpenAi"):
+                for group in (region, "🚀 手动切换", "♻️ 自动选择"):
                     self.assertTrue(accepts(self.groups[group], name))
         self.assertTrue(accepts(self.groups["🚀 手动切换"], "香港 直连"))
 
@@ -203,7 +182,7 @@ class OverrideTests(unittest.TestCase):
         for name in UNKNOWN_SAMPLES:
             with self.subTest(name=name):
                 self.assertFalse(any(accepts(self.groups[g], name) for g in REGIONS))
-                for group in ("🌐 其他节点", "♻️ 自动选择", "💬 OpenAi", "🚀 手动切换"):
+                for group in ("🌐 其他节点", "♻️ 自动选择", "🚀 手动切换"):
                     self.assertTrue(accepts(self.groups[group], name))
 
     def test_filter_definitions_stay_synchronized(self):
@@ -223,7 +202,6 @@ class OverrideTests(unittest.TestCase):
 
         no_hk = union([self.groups["🇭🇰 香港节点"]["filter"], notice])
         self.assertEqual(self.groups["♻️ 自动选择"]["exclude-filter"], no_hk)
-        self.assertEqual(self.groups["💬 OpenAi"]["exclude-filter"], no_hk)
         self.assertEqual(self.groups["🌐 其他节点"]["exclude-filter"], union(region_filters + [notice]))
 
     def test_rule_providers_update_daily(self):

@@ -59,11 +59,6 @@ class MihomoRuntimeTests(unittest.TestCase):
                         expected = {groups[name].get("empty-fallback", "COMPATIBLE")}
                     self.assertEqual(set(proxies[name]["all"]), expected, name)
                     self.assertTrue(set(NOTICE_SAMPLES).isdisjoint(expected))
-                    if name == "💬 OpenAi":
-                        self.assertIn(proxies[name]["now"], expected)
-                        self.assertEqual(proxies[name]["emptyFallback"], "REJECT")
-                        self.assertTrue(set(HONG_KONG).isdisjoint(expected))
-                        self.assertTrue({"DIRECT", "COMPATIBLE", direct["name"]}.isdisjoint(expected))
 
     def run_core(self, template, static_nodes, provider_nodes):
         config = copy.deepcopy(template)
@@ -115,7 +110,7 @@ class MihomoRuntimeTests(unittest.TestCase):
                             with client.open(f"http://127.0.0.1:{port}/proxies", timeout=1) as response:
                                 proxies = json.load(response)["proxies"]
                             # The controller can respond before the configuration is applied.
-                            if {"♻️ 自动选择", "🌐 其他节点", "💬 OpenAi"} <= proxies.keys():
+                            if {"♻️ 自动选择", "🌐 其他节点"} <= proxies.keys():
                                 return proxies
                         except OSError:
                             pass
